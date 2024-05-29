@@ -80,7 +80,7 @@ app.MapGet("api/v1/organizations", () =>
     <link rel='stylesheet' href='https://cdn.simplecss.org/simple-v1.css'>
     </head>
     <body>
-    <h1> Oranizations </h1>
+    <h1> Organizations </h1>
     <p> Koya Organization </p>
     </body>
     </html>
