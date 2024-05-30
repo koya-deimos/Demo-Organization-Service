@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-    logger.LogInformation("Fetching pipelines");
+builder.Services.AddLogging();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -20,7 +20,7 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("api/v1", () =>
+app.MapGet("api/v1", (ILogger<Program> logger) =>
 {
     logger.LogInformation("Home page");
     var now = DateTime.UtcNow;
@@ -37,7 +37,7 @@ app.MapGet("api/v1", () =>
     ", "text/html");
 });//.Produces(200, contentType: "text/html");
 
-app.MapGet("api/v1/projects", () =>
+app.MapGet("api/v1/projects", (ILogger<Program> logger) =>
 {
     logger.LogInformation("Fetching projects");
     var now = DateTime.UtcNow;
@@ -55,7 +55,7 @@ app.MapGet("api/v1/projects", () =>
     ", "text/html");
 });//.Produces(200, contentType: "text/html");
     
-app.MapGet("api/v1/spaces", () =>
+app.MapGet("api/v1/spaces", (ILogger<Program> logger) =>
 {
     logger.LogInformation("Fetching spaces");
     var now = DateTime.UtcNow;
@@ -74,7 +74,7 @@ app.MapGet("api/v1/spaces", () =>
 });//.Produces(200, contentType: "text/html");
 
     
-app.MapGet("api/v1/organizations", () =>
+app.MapGet("api/v1/organizations", (ILogger<Program> logger) =>
 {
     logger.LogInformation("Fetching organizations");
     var now = DateTime.UtcNow;
