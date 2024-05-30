@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+    logger.LogInformation("Fetching pipelines");
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,6 +22,7 @@ var summaries = new[]
 
 app.MapGet("api/v1", () =>
 {
+    logger.LogInformation("Home page");
     var now = DateTime.UtcNow;
     return Results.Text(@$"
     <html>
@@ -38,6 +39,7 @@ app.MapGet("api/v1", () =>
 
 app.MapGet("api/v1/projects", () =>
 {
+    logger.LogInformation("Fetching projects");
     var now = DateTime.UtcNow;
     return Results.Text(@$"
     <html>
@@ -55,6 +57,7 @@ app.MapGet("api/v1/projects", () =>
     
 app.MapGet("api/v1/spaces", () =>
 {
+    logger.LogInformation("Fetching spaces");
     var now = DateTime.UtcNow;
     return Results.Text(@$"
     <html>
@@ -73,6 +76,7 @@ app.MapGet("api/v1/spaces", () =>
     
 app.MapGet("api/v1/organizations", () =>
 {
+    logger.LogInformation("Fetching organizations");
     var now = DateTime.UtcNow;
     return Results.Text(@$"
     <html>
