@@ -20,7 +20,7 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("api/v1", (ILogger<Program> logger) =>
+app.MapGet("/", (ILogger<Program> logger) =>
 {
     logger.LogInformation("Home page");
     var now = DateTime.UtcNow;
