@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: salus-2e65d758-96d8-458c-891f-adcc9e026589-ingress-two
+  namespace: testenterprisespace--production-333062706
+  annotations:
+    cert-manager.io/cluster-issuer: lets-encrypt-nginx
+    kubernetes.io/ingress.allow-http: 'true'
+    nginx.ingress.kubernetes.io/proxy-body-size: 20m
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - distracted-cannon-2e65d758.salus.dev
+      secretName: distracted-cannon-2e65d758-d-salus-d-dev-key
+    - hosts:
+        - pathbasedroute.salus.dev
+      secretName: pathbasedroute-d-salus-d-dev-key
+  rules:
+    - host: distracted-cannon-2e65d758.salus.dev
+      http:
+        paths:
+          - path: /swagger()(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: salus-app-service-2e65d758
+                port:
+                  name: http
+    - host: pathbasedroute.salus.dev
+      http:
+        paths:
+          - path: /organization/swagger(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: salus-app-service-2e65d758
+                port:
+                  name: http
