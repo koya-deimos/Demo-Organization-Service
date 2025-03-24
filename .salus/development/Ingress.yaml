@@ -29,7 +29,7 @@ spec:
     - host: sweet-jang-2e65d758.salus.dev
       http:
         paths:
-          - path: /swagger(/|$)(.*)
+          - path: /swagger()(.*)
             pathType: Prefix
             backend:
               service:
