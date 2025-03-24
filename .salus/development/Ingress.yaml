@@ -48,9 +48,9 @@ spec:
                   name: http
 
           - path: /organization/swagger/(.+\.(js|css|png|jpg|jpeg|gif|ico))
-              pathType: Prefix
-              backend:
-                service:
-                  name: salus-app-service-2e65d758
-                  port:
-                    name: http
+            pathType: Prefix
+            backend:
+              service:
+                name: salus-app-service-2e65d758
+                port:
+                  name: http
