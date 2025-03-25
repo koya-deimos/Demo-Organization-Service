@@ -39,7 +39,7 @@ spec:
     - host: pathbasedroute.salus.dev
       http:
         paths:
-          - path: /organization/swagger()(.*)
+          - path: /organization/swagger(/|$)(.*)
             pathType: Prefix
             backend:
               service:
