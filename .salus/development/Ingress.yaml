@@ -35,7 +35,7 @@ spec:
               service:
                 name: demo-organization-service
                 port:
-                  name: http
+                  number: 80
     - host: pathbasedroute.salus.dev
       http:
         paths:
@@ -45,4 +45,4 @@ spec:
               service:
                 name: demo-organization-service
                 port:
-                  name: http
+                  number: 80
