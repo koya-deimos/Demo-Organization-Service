@@ -1,3 +1,10 @@
+using System.Text;
+using Azure.Core;
+using Microsoft.EntityFrameworkCore;
+using Serilog;
+using webapi;
+using webapi.Persistence;
+
 var builder = WebApplication.CreateBuilder(args);
 
 //koya commented
@@ -6,12 +13,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddLogging();
+builder.Services.AddHttpLogging(o => { });
+builder.Services.AddPersistence(builder.Configuration);
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration
+        .ReadFrom.Configuration(context.Configuration) // Read configuration from appsettings.json
+        .Enrich.FromLogContext(); // Ensure enrichers are applied
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 var summaries = new[]
 {
@@ -52,7 +68,7 @@ app.MapGet("api/v1/projects", (ILogger<Program> logger) =>
     </html>
     ", "text/html");
 });//.Produces(200, contentType: "text/html");
-    
+
 app.MapGet("api/v1/spaces", (ILogger<Program> logger) =>
 {
     logger.LogInformation("Fetching spaces");
@@ -71,10 +87,58 @@ app.MapGet("api/v1/spaces", (ILogger<Program> logger) =>
     ", "text/html");
 });//.Produces(200, contentType: "text/html");
 
-    
-app.MapGet("api/v1/organizations", (ILogger<Program> logger) =>
+
+app.MapGet("api/v1/organizations", async (ILogger<Program> logger, ApplicationDbContext dbContext) =>
 {
     logger.LogInformation("Fetching organizations");
+    var now = DateTime.UtcNow;
+
+    var organizations = await dbContext.Organizations.ToListAsync();
+    var html = new StringBuilder();
+    html.Append(@"
+<html>
+<head>
+<link rel='stylesheet' href='https://cdn.simplecss.org/simple-v1.css'>
+</head>
+<body>
+<h1>Organizations</h1>
+");
+
+    if (organizations.Any())
+    {
+        html.Append("<ul>");
+        foreach (var org in organizations)
+        {
+            html.Append($"<li>{org.Name}</li>");
+        }
+        html.Append("</ul>");
+    }
+    else
+    {
+        html.Append("<p>No organizations found.</p>");
+    }
+
+    html.Append(@"
+</body>
+</html>
+");
+
+    return Results.Text(html.ToString(), "text/html");
+});//.Produces(200, contentType: "text/html");
+
+app.MapPost("api/v1/organizations", async (ILogger<Program> logger, OrganizationRequest request, ApplicationDbContext dbContext) =>
+{
+    logger.LogInformation("Creating organizations");
+    var organization = new Organization()
+    {
+        Description = request.Description,
+        Name = request.Name,
+        Id = Guid.CreateVersion7(),
+    };
+    dbContext.Organizations.Add(organization);
+    await dbContext.SaveChangesAsync();
+    logger.LogInformation("Created organization");
+
     var now = DateTime.UtcNow;
     return Results.Text(@$"
     <html>
@@ -83,12 +147,14 @@ app.MapGet("api/v1/organizations", (ILogger<Program> logger) =>
     </head>
     <body>
     <h1> Organizations </h1>
-    <p> Koya Organization </p>
+    <p> {organization} Organization created </p>
     </body>
     </html>
     ", "text/html");
 });//.Produces(200, contentType: "text/html");
 
+app.UseHttpLogging();
+app.Services.MigrateTransactionsDb();
 
 app.Run("http://0.0.0.0:8080");
 
