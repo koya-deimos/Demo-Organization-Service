@@ -13,7 +13,6 @@ public static class DependencyInjection
                 action => action
                     .EnableRetryOnFailure()
             );
-            options.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
         });
 
         // Database Instance Management repositories

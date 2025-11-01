@@ -133,7 +133,7 @@ app.MapPost("api/v1/organizations", async (ILogger<Program> logger, Organization
     {
         Description = request.Description,
         Name = request.Name,
-        Id = Guid.CreateVersion7(),
+        Id = Guid.NewGuid(),
     };
     dbContext.Organizations.Add(organization);
     await dbContext.SaveChangesAsync();
